@@ -630,6 +630,14 @@
         </div>
     </div>
     <!-- Blog End -->
+
+
+    <header>
+    <h1>Search the Website</h1>
+    <input type="text" id="searchBar" placeholder="Search here..." onkeyup="searchPages()">
+    <ul id="searchResults"></ul>
+  </header>
+
     
 
     <!-- Footer Start -->
@@ -703,6 +711,43 @@
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 
+      <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxq-rVLCY8UKl92BUEFtghN-S90eXdqrp0QgxAzo68jJHfFCRHxuufMHuxSSgm3-0RT/exec'; // Replace with your Apps Script Web App URL
+
+async function searchPages() {
+  const query = document.getElementById('searchBar').value;
+  const results = document.getElementById('searchResults');
+
+  // Clear previous results
+  results.innerHTML = '';
+
+  try {
+    const response = await fetch(`${scriptURL}?query=${encodeURIComponent(query)}`);
+    const data = await response.json();
+
+    if (data.items) {
+      data.items.forEach(item => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+
+        // Set link to the result URL
+        a.href = item.link;
+        a.target = '_blank'; // Opens in new tab
+        a.innerHTML = `<strong>${item.title}</strong>: ${item.snippet}`;
+
+        li.appendChild(a);
+        results.appendChild(li);
+      });
+    } else {
+      results.innerHTML = '<li>No results found.</li>';
+    }
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+    results.innerHTML = '<li>Error fetching search results.</li>';
+  }
+}
+
+  </script>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
